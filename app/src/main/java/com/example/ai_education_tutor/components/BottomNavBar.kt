@@ -28,6 +28,7 @@ import com.example.ai_education_tutor.ui.theme.InactiveGray
 import com.example.ai_education_tutor.ui.theme.NavWhite
 import kotlinx.coroutines.selects.select
 import java.nio.file.WatchEvent
+import androidx.compose.foundation.layout.navigationBarsPadding
 
 
 @Composable
@@ -45,119 +46,131 @@ fun BottomNavBar(navController: NavController){
 
     val currentRoute = backStackEntry.value?.destination?.route
 
-    Card(
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                start = 10.dp,
-                end = 10.dp,
-                bottom = 10.dp
-            ),
+            .background(Color.White)
+            .navigationBarsPadding()
+    ){
 
-        elevation = 12.dp,
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = 10.dp,
+                    end = 10.dp,
+                    top = 10.dp,
+                    bottom = 10.dp
+                )
+                .navigationBarsPadding(),
 
-        backgroundColor = NavWhite,
+            elevation = 12.dp,
+            backgroundColor = NavWhite,
+            shape = RoundedCornerShape(20.dp)
+        ) {
 
-        shape = RoundedCornerShape(20.dp)
-    ) {
+            BottomNavigation(
+                backgroundColor = Color.Transparent,
+                elevation = 0.dp,
+                modifier = Modifier.height(78.dp)
+            ){
 
-        BottomNavigation(
-            backgroundColor = Color.Transparent,
-            elevation = 0.dp,
-            modifier = Modifier.height(78.dp)
-        ){
+                items.forEach { item ->
 
-            items.forEach { item ->
+                    val selected = currentRoute == item.route
 
-                val selected = currentRoute == item.route
-
-                BottomNavigationItem(
-                    selected = selected,
+                    BottomNavigationItem(
+                        selected = selected,
 
 
 
-                    onClick = {
-                        navController.navigate(item.route){
-                            popUpTo(
-                                navController.graph.startDestinationId
+                        onClick = {
+                            navController.navigate(item.route){
+                                popUpTo(
+                                    navController.graph.startDestinationId
+                                ){
+                                    saveState = true
+                                }
+
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+
+                        selectedContentColor = ActiveBlue,
+                        unselectedContentColor = InactiveGray,
+
+                        icon = {
+
+                            Box(
+                                modifier = Modifier
+                                    .size(42.dp)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(
+                                        if(selected){
+                                            ActiveIndicator
+                                        }else{
+                                            Color.Transparent
+                                        }
+                                    ),
+
+                                contentAlignment = Alignment.Center
                             ){
-                                saveState = true
+
+                                Icon(
+                                    painter = when(item.route){
+                                        "home" -> painterResource(
+                                            id = R.drawable.ic_home
+                                        )
+
+                                        "courses" -> painterResource(
+                                            id = R.drawable.ic_course
+                                        )
+
+                                        "AI_tutor" -> painterResource(
+                                            id = R.drawable.ic_ai
+                                        )
+
+                                        "profile" -> painterResource(
+                                            id = R.drawable.ic_profile
+                                        )
+
+                                        else -> painterResource(
+                                            id = R.drawable.ic_home
+                                        )
+
+
+                                    },
+                                    contentDescription = item.title,
+
+                                    tint = if (selected){
+                                        ActiveBlue
+                                    }else{
+                                        InactiveGray
+                                    },
+
+                                    modifier = Modifier.size(22.dp)
+                                )
+
+
+
                             }
 
-                            launchSingleTop = true
-                            restoreState = true
+                        },
+
+                        label = {
+                            Text(text = item.title)
                         }
-                    },
+                    )
+                }
 
-                    selectedContentColor = ActiveBlue,
-                    unselectedContentColor = InactiveGray,
-
-                    icon = {
-
-                        Box(
-                           modifier = Modifier
-                               .size(42.dp)
-                               .clip(RoundedCornerShape(10.dp))
-                               .background(
-                                   if(selected){
-                                       ActiveIndicator
-                                   }else{
-                                       Color.Transparent
-                                   }
-                               ),
-
-                           contentAlignment = Alignment.Center
-                        ){
-
-                            Icon(
-                                painter = when(item.route){
-                                    "home" -> painterResource(
-                                        id = R.drawable.ic_home
-                                    )
-
-                                    "courses" -> painterResource(
-                                        id = R.drawable.ic_course
-                                    )
-
-                                    "AI_tutor" -> painterResource(
-                                        id = R.drawable.ic_ai
-                                    )
-
-                                    "profile" -> painterResource(
-                                        id = R.drawable.ic_profile
-                                    )
-
-                                    else -> painterResource(
-                                        id = R.drawable.ic_home
-                                    )
-
-
-                                },
-                                contentDescription = item.title,
-
-                                tint = if (selected){
-                                    ActiveBlue
-                                }else{
-                                    InactiveGray
-                                },
-
-                                modifier = Modifier.size(22.dp)
-                            )
-
-
-
-                        }
-
-                    },
-
-                    label = {
-                        Text(text = item.title)
-                    }
-                )
             }
 
         }
 
     }
+
+
 
 }
